@@ -1,15 +1,28 @@
 let intentos = 6;
 let diccionario = ['APPLE', 'HURLS', 'WINGS', 'YOUTH'];
-const palabra = random(diccionario);
+let palabra = '';
 
 window.addEventListener('load', init);
 
 function init() {
     console.log('Esto se ejecuta solo cuando se carga la página web');
+    obtenerPalabraAleatoria();
 }
 
 const button = document.getElementById("guess-button");
 button.addEventListener("click", intentar);
+
+function obtenerPalabraAleatoria() {
+    fetch('https://random-word-api.herokuapp.com/word')
+        .then(response => response.json())
+        .then(data => {
+            palabra = data[0].toUpperCase();
+            console.log('Palabra aleatoria:', palabra);
+        })
+        .catch(error => {
+            console.error('Error al obtener la palabra aleatoria:', error);
+        });
+}
 
 function intentar() {
     if (intentos > 0) {
@@ -62,11 +75,5 @@ function terminar(mensaje) {
     let contenedor = document.getElementById('guesses');
     contenedor.innerHTML = mensaje;
 }
-
-function random(diccionario) {
-    const indiceAleatorio = Math.floor(Math.random() * diccionario.length);
-    return diccionario[indiceAleatorio];
-}
-
 
 document.getElementById('remaining-guesses').textContent = `Intentos restantes: ${intentos}`;
